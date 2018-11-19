@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 
 def crop(path):
     i = 0
-    for xml_file in glob.glob(path + '/train/*.xml'):
+    for xml_file in glob.glob(path + '/images/*.xml'):
         tree = ET.parse(xml_file)
         root = tree.getroot()
         for member in root.findall('object'): 
@@ -21,7 +21,7 @@ def crop(path):
             if not os.path.exists(value[1]):
                 os.makedirs(value[1])
 
-            img = Image.open(value[0])
+            img = Image.open(path + '/images/' + value[0])
             img = img.crop((value[2], value[3], value[4], value[5]))
             img.save(value[1] + '/image_' + value[1] + '_' + str(i) + '.png')
 
