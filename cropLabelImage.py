@@ -8,7 +8,7 @@ def crop(path):
     for xml_file in glob.glob(path + '/images/*.xml'):
         tree = ET.parse(xml_file)
         root = tree.getroot()
-        for member in root.findall('object'): 
+        for member in root.findall('object'):
             i += 1
             value = [root.find('filename').text,
                 member[0].text,
@@ -18,12 +18,12 @@ def crop(path):
                 int(member[4][3].text)
                 ]
 
-            if not os.path.exists(value[1]):
-                os.makedirs(value[1])
+            if not os.path.exists(path + '/' + value[1]):
+                os.makedirs(path + '/' + value[1])
 
             img = Image.open(path + '/images/' + value[0])
             img = img.crop((value[2], value[3], value[4], value[5]))
-            img.save(value[1] + '/image_' + value[1] + '_' + str(i) + '.png')
+            img.save(path + '/' + value[1] + '/image_' + value[1] + '_' + str(i) + '.png')
 
     print('done ' + str(i) + ' labels')
 
