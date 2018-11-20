@@ -1,3 +1,6 @@
+#
+#  Images and files are read from directory "images".
+#
 import os
 import glob
 from PIL import Image
