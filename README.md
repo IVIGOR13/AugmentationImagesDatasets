@@ -30,3 +30,8 @@
 
 Повернутое изображение: 
 ![Повернутое изображение](https://github.com/IVIGOR13/AugmentationImagesDatasets/blob/master/example/image_three_turn-10.png)
+
+Примеры комбинированных искажений: 
+![Наложено несколько эффектов](https://github.com/IVIGOR13/AugmentationImagesDatasets/blob/master/example/image_three_combo_0.png)
+![Наложено несколько эффектов](https://github.com/IVIGOR13/AugmentationImagesDatasets/blob/master/example/image_three_combo_1.png)
+![Наложено несколько эффектов](https://github.com/IVIGOR13/AugmentationImagesDatasets/blob/master/example/image_three_combo_2.png)
