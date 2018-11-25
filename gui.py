@@ -1,6 +1,7 @@
 import sys
 from PyQt5.Qt import *
-import find_files
+import os
+import treatment_images as ti
 class App(QWidget):
     def __init__(self):
         super().__init__()
@@ -17,52 +18,108 @@ class App(QWidget):
         self.path_line = QLineEdit(self)
         self.path_line.textChanged[str].connect(self.onChangeBrowseLine)
 
-        vbox = QVBoxLayout()
         inbox = QHBoxLayout()
         inbox.addWidget(self.browseBut)
         inbox.addWidget(self.path_line)
-        vbox.addLayout(inbox)
-        vbox.addStretch(1)
 
+        # 1
         checkBox = QHBoxLayout()
         checkBoxLeft = QVBoxLayout()
         checkBoxRight = QVBoxLayout()
 
-        black_and_white = QCheckBox('Black and white', self)
-        black_and_white.stateChanged.connect(self.treat_black_white)
-        noises = QCheckBox('Noises', self)
-        noises.stateChanged.connect(self.treat_noises)
-        turns = QCheckBox('Turn', self)
-        turns.stateChanged.connect(self.treat_turns)
-        gray_shades = QCheckBox('Shades gray', self)
-        gray_shades.stateChanged.connect(self.treat_gray_shades)
-        strips = QCheckBox('Strips', self)
-        strips.stateChanged.connect(self.treat_strip)
+        # Left column
+        self.black_and_white = QCheckBox('Black and white', self)
+        self.noises = QCheckBox('Noises', self)
+        self.turns = QCheckBox('Turn', self)
+        self.gray_shades = QCheckBox('Shades gray', self)
+        self.strips = QCheckBox('Strips', self)
 
-        glare = QCheckBox('Glares', self)
-        glare.stateChanged.connect(self.treat_glare)
-        blur = QCheckBox('Blur', self)
-        blur.stateChanged.connect(self.treat_blur)
-        compress = QCheckBox('Compress', self)
-        compress.stateChanged.connect(self.treat_compress)
-        stretch = QCheckBox('Stretch', self)
-        stretch.stateChanged.connect(self.treat_stretch)
+        self.black_and_white.stateChanged.connect(self.treat_black_white)
+        self.noises.stateChanged.connect(self.treat_noises)
+        self.turns.stateChanged.connect(self.treat_turns)
+        self.gray_shades.stateChanged.connect(self.treat_gray_shades)
+        self.strips.stateChanged.connect(self.treat_strip)
 
+        # Right column
+        self.glare = QCheckBox('Glares', self)
+        self.blur = QCheckBox('Blur', self)
+        self.compress = QCheckBox('Compress', self)
+        self.stretch = QCheckBox('Stretch', self)
 
-        checkBoxLeft.addWidget(black_and_white)
-        checkBoxLeft.addWidget(noises)
-        checkBoxLeft.addWidget(turns)
-        checkBoxLeft.addWidget(gray_shades)
-        checkBoxLeft.addWidget(strips)
+        self.glare.stateChanged.connect(self.treat_glare)
+        self.blur.stateChanged.connect(self.treat_blur)
+        self.compress.stateChanged.connect(self.treat_compress)
+        self.stretch.stateChanged.connect(self.treat_stretch)
 
-        checkBoxRight.addWidget(glare)
-        checkBoxRight.addWidget(blur)
-        checkBoxRight.addWidget(compress)
-        checkBoxRight.addWidget(stretch)
+        checkBoxLeft.addWidget(self.black_and_white)
+        checkBoxLeft.addWidget(self.noises)
+        checkBoxLeft.addWidget(self.turns)
+        checkBoxLeft.addWidget(self.gray_shades)
+        checkBoxLeft.addWidget(self.strips)
+
+        checkBoxRight.addWidget(self.glare)
+        checkBoxRight.addWidget(self.blur)
+        checkBoxRight.addWidget(self.compress)
+        checkBoxRight.addWidget(self.stretch)
 
         checkBox.addLayout(checkBoxLeft)
         checkBox.addLayout(checkBoxRight)
-        vbox.addLayout(checkBox)
+
+        #2
+        checkBox_one = QHBoxLayout()
+        checkBoxLeft_one = QVBoxLayout()
+        checkBoxRight_one = QVBoxLayout()
+
+        # Left column
+        self.black_and_white_one = QCheckBox('Black and white', self)
+        self.noises_one = QCheckBox('Noises', self)
+        self.turns_one = QCheckBox('Turn', self)
+        self.gray_shades_one = QCheckBox('Shades gray', self)
+        self.strips_one = QCheckBox('Strips', self)
+
+        self.black_and_white_one.stateChanged.connect(self.treat_black_white)
+        self.noises_one.stateChanged.connect(self.treat_noises)
+        self.turns_one.stateChanged.connect(self.treat_turns)
+        self.gray_shades_one.stateChanged.connect(self.treat_gray_shades)
+        self.strips_one.stateChanged.connect(self.treat_strip)
+
+        # Right column
+        self.glare_one = QCheckBox('Glares', self)
+        self.blur_one = QCheckBox('Blur', self)
+        self.compress_one = QCheckBox('Compress', self)
+        self.stretch_one = QCheckBox('Stretch', self)
+
+        self.glare_one.stateChanged.connect(self.treat_glare)
+        self.blur_one.stateChanged.connect(self.treat_blur)
+        self.compress_one.stateChanged.connect(self.treat_compress)
+        self.stretch_one.stateChanged.connect(self.treat_stretch)
+
+        checkBoxLeft_one.addWidget(self.black_and_white_one)
+        checkBoxLeft_one.addWidget(self.noises_one)
+        checkBoxLeft_one.addWidget(self.turns_one)
+        checkBoxLeft_one.addWidget(self.gray_shades_one)
+        checkBoxLeft_one.addWidget(self.strips_one)
+
+        checkBoxRight_one.addWidget(self.glare_one)
+        checkBoxRight_one.addWidget(self.blur_one)
+        checkBoxRight_one.addWidget(self.compress_one)
+        checkBoxRight_one.addWidget(self.stretch_one)
+
+        checkBox_one.addLayout(checkBoxLeft_one)
+        checkBox_one.addLayout(checkBoxRight_one)
+
+        tab1 = QFrame()
+        tab1.setLayout(checkBox)
+        tab2 = QFrame()
+        tab2.setLayout(checkBox_one)
+        self.tab = QTabWidget()
+        self.tab.addTab(tab1, "&more")
+        self.tab.addTab(tab2, "&one")
+        self.tab.currentChanged.connect(self.changeTab)
+
+        vbox = QVBoxLayout()
+        vbox.addLayout(inbox)
+        vbox.addWidget(self.tab)
         vbox.addWidget(self.runBut)
 
         self.setLayout(vbox)
@@ -71,6 +128,9 @@ class App(QWidget):
         self.setWindowTitle('Program')
         self.setWindowIcon(QIcon('icon.jpg'))
         self.show()
+
+    def changeTab(self):
+        self.arr_treat = []
 
     def treat_black_white(self, state):
         if state == Qt.Checked:
@@ -125,10 +185,11 @@ class App(QWidget):
         else:
             self.remove_value(9)
     def remove_value(self, x):
-        for i in [0, 1, 2, 4, 5, 7, 8]:
-            if self.arr_treat[i][0] == x:
-                self.arr_treat.__delitem__(i)
-                break
+        if not self.arr_treat == []:
+            for i in [0, 1, 2, 4, 5, 7, 8]:
+                if self.arr_treat[i][0] == x:
+                    self.arr_treat.__delitem__(i)
+                    break
 
     def onChangeBrowseLine(self, text):
         self.DIRPATH = text
@@ -147,13 +208,18 @@ class App(QWidget):
 
     def runClicked(self):
         if not self.DIRPATH == '':
-            find_files.be(self.DIRPATH, self.arr_treat)
+            files = os.listdir(self.DIRPATH)
+            images_png = [x for x in files if x.endswith('.png')]
+            images_jpg = [x for x in files if x.endswith('.jpg')]
+            images = images_png + images_jpg
+            for i in images:
+                ti.TreatmentImages(self.DIRPATH, i, self.arr_treat, self.tab.currentIndex())
+
             self.path_line.clear()
             self.DIRPATH = ''
-            print(self.arr_treat)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = App()
-    ex.resize(500, 171)
+    ex.resize(630, 171)
     sys.exit(app.exec_())
