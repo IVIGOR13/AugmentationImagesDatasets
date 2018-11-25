@@ -35,3 +35,22 @@
 ![Наложено несколько эффектов](https://github.com/IVIGOR13/AugmentationImagesDatasets/blob/master/example/image_three_combo_0.png)
 ![Наложено несколько эффектов](https://github.com/IVIGOR13/AugmentationImagesDatasets/blob/master/example/image_three_combo_1.png)
 ![Наложено несколько эффектов](https://github.com/IVIGOR13/AugmentationImagesDatasets/blob/master/example/image_three_combo_2.png)
+
+# Установка
+
+Клонирование репозитория
+```
+$ git clone https://github.com/IVIGOR13/AugmentationImagesDatasets.git
+```
+Настройка 
+```
+$ pip install pillow
+$ pip install pandas
+$ pip install numpy
+$ pip install pyqt5
+```
+Запуск
+```
+$ cd AugmentationImagesDatasets
+$ python gui.py
+```
