@@ -125,7 +125,7 @@ class App(QWidget):
         self.setLayout(vbox)
         self.show()
         self.move(250, 150)
-        self.setWindowTitle('Program')
+        self.setWindowTitle('AugmentationImg')
         self.setWindowIcon(QIcon('icon.jpg'))
         self.show()
 
