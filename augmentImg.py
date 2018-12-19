@@ -135,19 +135,19 @@ class App(QWidget):
     def treat_black_white(self, state):
         if state == Qt.Checked:
             self.arr_treat.append([1])
-            self.showDialog(1)
+            self.showDialog(1, 'Change the conversion threshold.')
         else:
             self.remove_value(1)
     def treat_noises(self, state):
         if state == Qt.Checked:
             self.arr_treat.append([2])
-            self.showDialog(2)
+            self.showDialog(2, 'Noise factor.')
         else:
             self.remove_value(2)
     def treat_turns(self, state):
         if state == Qt.Checked:
             self.arr_treat.append([3])
-            self.showDialog(3)
+            self.showDialog(3, 'Rotate in degrees.')
         else:
             self.remove_value(3)
     def treat_gray_shades(self, state):
@@ -158,13 +158,13 @@ class App(QWidget):
     def treat_strip(self, state):
         if state == Qt.Checked:
             self.arr_treat.append([5])
-            self.showDialog(5)
+            self.showDialog(5, 'How many tones to shade.')
         else:
             self.remove_value(5)
     def treat_glare(self, state):
         if state == Qt.Checked:
             self.arr_treat.append([6])
-            self.showDialog(6)
+            self.showDialog(6, 'How many tones to shade.')
         else:
             self.remove_value(6)
     def treat_blur(self, state):
@@ -175,13 +175,13 @@ class App(QWidget):
     def treat_compress(self, state):
         if state == Qt.Checked:
             self.arr_treat.append([8])
-            self.showDialog(8)
+            self.showDialog(8, 'How many times to compress.')
         else:
             self.remove_value(8)
     def treat_stretch(self, state):
         if state == Qt.Checked:
             self.arr_treat.append([9])
-            self.showDialog(9)
+            self.showDialog(9, 'How many times to stretch.')
         else:
             self.remove_value(9)
     def remove_value(self, x):
@@ -199,12 +199,13 @@ class App(QWidget):
         self.DIRPATH = path
         self.path_line.setText(self.DIRPATH)
 
-    def showDialog(self, treat):
-        value, ok = QInputDialog.getText(self, 'Input Dialog', 'Enter conversion factor:')
+    def showDialog(self, treat, text):
+        value, ok = QInputDialog.getText(self, 'Input Dialog',  str(text) + '\nEnter conversion factor:')
 
         if ok:
-            x = self.arr_treat.index([treat])
-            self.arr_treat[x].append(int(value))
+            if value != '':
+                x = self.arr_treat.index([treat])
+                self.arr_treat[x].append(float(value))
 
     def runClicked(self):
         if not self.DIRPATH == '':
