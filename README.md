@@ -45,6 +45,7 @@ $ git clone https://github.com/IVIGOR13/AugmentationImg.git
 Настройка 
 ```
 $ pip install pillow
+$ pip install opencv-python
 $ pip install pandas
 $ pip install numpy
 $ pip install pyqt5
