@@ -44,14 +44,14 @@ $ git clone https://github.com/IVIGOR13/AugmentationImg.git
 ```
 Настройка 
 ```
-$ pip install pillow
-$ pip install opencv-python
-$ pip install pandas
-$ pip install numpy
-$ pip install pyqt5
+$ pip3 install pillow
+$ pip3 install opencv-python
+$ pip3 install pandas
+$ pip3 install numpy
+$ pip3 install pyqt5
 ```
 Запуск
 ```
 $ cd AugmentationImg
-$ python gui.py
+$ python augmentImg.py
 ```
