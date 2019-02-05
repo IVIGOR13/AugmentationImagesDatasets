@@ -4,16 +4,15 @@ import cv2
 import numpy as np
 from PIL import Image, ImageDraw
 
-
 class TreatmentImages:
     def __init__(self, dir, name, treat, index_transform):
         self.directory_in = dir
         self.name_in = name[:len(name)-4]
-        self.image = Image.open(self.directory_in + '\\' + name)
+        self.image = Image.open(self.directory_in + '/' + name)
         self.width = self.image.size[0]
         self.height = self.image.size[1]
 
-        self.directory_out = dir + '\\out\\'
+        self.directory_out = dir + '/out/'
 
         if not os.path.exists(self.directory_out):
             os.makedirs(self.directory_out)
@@ -21,17 +20,17 @@ class TreatmentImages:
         if index_transform == 0:
             for i in range(len(treat)):
                 if treat[i][0] == 1:
-                    img = self.transform_black_white(treat[i][1], self.image.copy())
+                    img = self.transform_black_white(int(treat[i][1]), self.image.copy())
                     path = self.directory_out + self.name_in + '_black-white'
                     img.save((path + '.png'), "PNG")
 
                 if treat[i][0] == 2:
-                    img = self.transform_noises(treat[i][1], self.image.copy())
+                    img = self.transform_noises(int(treat[i][1]), self.image.copy())
                     path = self.directory_out + self.name_in + '_noises'
                     img.save((path + '.png'), "PNG")
 
                 if treat[i][0] == 3:
-                    img = self.transform_turn(treat[i][1], self.directory_in + '/' + name)
+                    img = self.transform_turn(int(treat[i][1]), self.directory_in + '/' + name)
                     cv2.imwrite(self.directory_out + self.name_in + '_turn_plus' + ".png", img[0])
                     cv2.imwrite(self.directory_out + self.name_in + '_turn_minus' + ".png", img[1])
 
@@ -41,12 +40,12 @@ class TreatmentImages:
                     img.save((path + '.png'), "PNG")
 
                 if treat[i][0] == 5:
-                    img = self.transform_strip(treat[i][1], self.image.copy())
+                    img = self.transform_strip(int(treat[i][1]), self.image.copy())
                     path = self.directory_out + self.name_in + '_strip'
                     img.save((path + '.png'), "PNG")
 
                 if treat[i][0] == 6:
-                    img = self.transform_glare(treat[i][1], self.image.copy())
+                    img = self.transform_glare(int(treat[i][1]), self.image.copy())
                     path = self.directory_out + self.name_in + '_glare'
                     img.save((path + '.png'), "PNG")
 
@@ -55,12 +54,12 @@ class TreatmentImages:
                     cv2.imwrite(self.directory_out + self.name_in + '_blur' + ".png", img)
 
                 if treat[i][0] == 8:
-                    img = self.transform_compress(treat[i][1], self.image.copy())
+                    img = self.transform_compress(float(treat[i][1]), self.image.copy())
                     path = self.directory_out + self.name_in + '_compress'
                     img.save((path + '.png'), "PNG")
 
                 if treat[i][0] == 9:
-                    img = self.transform_stretch(treat[i][1], self.image.copy())
+                    img = self.transform_stretch(float(treat[i][1]), self.image.copy())
                     path = self.directory_out + self.name_in + '_stretch'
                     img.save((path + '.png'), "PNG")
 
@@ -114,9 +113,9 @@ class TreatmentImages:
     def name_combo(self, path):
         expansion = path[len(path)-4:]
         path = path[:len(path)-4]
-        p = path.split('\\')
+        p = path.split('/')
         path = p[:len(p)-1]
-        path = '\\'.join(path) + "\\"
+        path = '/'.join(path) + "/"
         name = p[len(p)-1]
 
         files = os.listdir(path)
@@ -130,22 +129,24 @@ class TreatmentImages:
         else:
             return path + name + expansion
 
-
-
-
     def transform_black_white(self, factor, img):
         pix = img.load()
         draw = ImageDraw.Draw(img)
 
         for i in range(self.width):
             for j in range(self.height):
-                S = pix[i, j][0] + pix[i, j][1] + pix[i, j][2]
-                if (S > (((255+factor) // 2) * 3)):
-                    a, b, c = 255, 255, 255
+                p = pix[i, j]
+                if type(p) != int:
+                    S = p[0] + p[1] + p[2]
+                    if (S >= (((255 + factor) // 2) * 3)):
+                        draw.point((i, j), (255, 255, 255))
+                    else:
+                        draw.point((i, j), (0, 0, 0))
                 else:
-                    a, b, c = 0, 0, 0
-                draw.point((i, j), (a, b, c))
-
+                    if (p >= (255 + factor) // 2):
+                        draw.point((i, j), 255)
+                    else:
+                        draw.point((i, j), 0)
         return img
 
     def transform_noises(self, factor, img):
@@ -154,22 +155,27 @@ class TreatmentImages:
         for i in range(self.width):
             for j in range(self.height):
                 rand = random.randint(-factor, factor)
-                a = pix[i, j][0] + rand
-                b = pix[i, j][1] + rand
-                c = pix[i, j][2] + rand
-                if (a < 0): a = 0
-                if (b < 0): b = 0
-                if (c < 0): c = 0
-                if (a > 255): a = 255
-                if (b > 255): b = 255
-                if (c > 255): c = 255
-                draw.point((i, j), (a, b, c))
+                p = pix[i, j]
+                if type(p) != int:
+                    a = pix[i, j][0] + rand
+                    b = pix[i, j][1] + rand
+                    c = pix[i, j][2] + rand
+                    if (a < 0): a = 0
+                    if (b < 0): b = 0
+                    if (c < 0): c = 0
+                    if (a > 255): a = 255
+                    if (b > 255): b = 255
+                    if (c > 255): c = 255
+                    draw.point((i, j), (a, b, c))
+                else:
+                    if (p < 0): draw.point((i, j), 0)
+                    if (p > 255): draw.point((i, j), 255)
 
         return img
 
     def transform_turn(self, factor, path):
         def turn_image(image, angle):
-            image_size = (image.shape[1], image.shape[0])
+            image_size = (self.width, self.height)
             image_center = tuple(np.array(image_size) / 2)
 
             rot_mat = np.vstack(
@@ -222,8 +228,8 @@ class TreatmentImages:
             return result
 
         image = cv2.imread(path)
-        image_turned1 = turn_image(image, factor)
 
+        image_turned1 = turn_image(image, factor)
         image = cv2.imread(self.directory_in + '/' + self.name_in + '.png')
         image_turned2 = turn_image(image, -factor)
         return [image_turned1, image_turned2]
@@ -232,11 +238,11 @@ class TreatmentImages:
         pix = img.load()
         draw = ImageDraw.Draw(img)
 
-        for i in range(self.width):
-            for j in range(self.height):
-                S = (pix[i, j][0] + pix[i, j][1] + pix[i, j][2]) // 3
-                draw.point((i, j), (S, S, S))
-
+        if type(pix[0, 0]) != int:
+            for i in range(self.width):
+                for j in range(self.height):
+                    S = (pix[i, j][0] + pix[i, j][1] + pix[i, j][2]) // 3
+                    draw.point((i, j), (S, S, S))
         return img
 
     def transform_strip(self, factor, img):
@@ -248,52 +254,84 @@ class TreatmentImages:
         tout = round(self.height * random.randint(0, 100) / 100)
 
         if factor > 0:
-            for i in range(self.width):
-                for j in range(self.height):
-                    ti = round(tin)
-                    if j>ti and j<ti+self.height/8:
-                        if (pix[i, j][0] > 215):
-                            a = 255
-                        else:
-                            a = pix[i, j][0] + 40
-                        if (pix[i, j][1] > 215):
-                            b = 255
-                        else:
-                            b = pix[i, j][1] + 40
-                        if (pix[i, j][2] > 215):
-                            c = 255
-                        else:
-                            c = pix[i, j][2] + 40
+            if type(pix[0, 0]) != int:
+                for i in range(self.width):
+                    for j in range(self.height):
+                        ti = round(tin)
+                        if j > ti and j < ti+self.height // 8:
+                            if (pix[i, j][0] > 215):
+                                a = 255
+                            else:
+                                a = pix[i, j][0] + 40
+                            if (pix[i, j][1] > 215):
+                                b = 255
+                            else:
+                                b = pix[i, j][1] + 40
+                            if (pix[i, j][2] > 215):
+                                c = 255
+                            else:
+                                c = pix[i, j][2] + 40
 
-                        draw.point((i, j), (a, b ,c))
+                            draw.point((i, j), (a, b ,c))
 
-                if tin>tout:
-                    tin = tin + (abs(self.height*rand / 100 - tout) / self.width)
-                else:
-                    tin = tin - (abs(self.height * rand / 100 - tout) / self.width)
+                    if tin>tout:
+                        tin = tin + (abs(self.height*rand / 100 - tout) / self.width)
+                    else:
+                        tin = tin - (abs(self.height * rand / 100 - tout) / self.width)
+            else:
+                for i in range(self.width):
+                    for j in range(self.height):
+                        ti = round(tin)
+                        if j > ti and j < ti+self.height // 8:
+                            if (pix[i, j] > 215):
+                                a = 255
+                            else:
+                                a = pix[i, j] + 40
+                            draw.point((i, j), a)
+
+                    if tin>tout:
+                        tin = tin + (abs(self.height*rand / 100 - tout) / self.width)
+                    else:
+                        tin = tin - (abs(self.height * rand / 100 - tout) / self.width)
 
         else:
-            for i in range(self.width):
-                for j in range(self.height):
-                    ti = round(tin)
-                    if j > ti and j < ti + self.height / 8:
-                        if (pix[i, j][0] < -factor):
-                            a = 0
-                        else:
-                            a = pix[i, j][0] + factor
-                        if (pix[i, j][1] < -factor):
-                            b = 0
-                        else:
-                            b = pix[i, j][1] + factor
-                        if (pix[i, j][2] < -factor):
-                            c = 0
-                        else:
-                            c = pix[i, j][2] + factor
-                        draw.point((i, j), (a, b, c))
-                if tin > tout:
-                    tin = tin + (abs(self.height * rand / 100 - tout) / self.width)
-                else:
-                    tin = tin - (abs(self.height * rand / 100 - tout) / self.width)
+            if type(pix[0, 0]) != int:
+                for i in range(self.width):
+                    for j in range(self.height):
+                        ti = round(tin)
+                        if j > ti and j < ti + self.height // 8:
+                            if (pix[i, j][0] < -factor):
+                                a = 0
+                            else:
+                                a = pix[i, j][0] + factor
+                            if (pix[i, j][1] < -factor):
+                                b = 0
+                            else:
+                                b = pix[i, j][1] + factor
+                            if (pix[i, j][2] < -factor):
+                                c = 0
+                            else:
+                                c = pix[i, j][2] + factor
+                            draw.point((i, j), (a, b, c))
+                    if tin > tout:
+                        tin = tin + (abs(self.height * rand / 100 - tout) / self.width)
+                    else:
+                        tin = tin - (abs(self.height * rand / 100 - tout) / self.width)
+            else:
+                for i in range(self.width):
+                    for j in range(self.height):
+                        ti = round(tin)
+                        if j > ti and j < ti + self.height // 8:
+                            if (pix[i, j] < -factor):
+                                a = 0
+                            else:
+                                a = pix[i, j] + factor
+
+                            draw.point((i, j), a)
+                    if tin > tout:
+                        tin = tin + (abs(self.height * rand / 100 - tout) / self.width)
+                    else:
+                        tin = tin - (abs(self.height * rand / 100 - tout) / self.width)
 
         return img
 
@@ -306,46 +344,69 @@ class TreatmentImages:
         Oy = random.randint(0, 100) / 100 * self.height
 
         if factor > 0:
-            for i in range(self.width):
-                for j in range(self.height):
-                    if (i - Ox) ** 2 + (j - Oy) ** 2 <= radius ** 2:
-                        if (pix[i, j][0] > (255 - factor)):
-                            a = 255
-                        else:
-                            a = pix[i, j][0] + factor
-                        if (pix[i, j][1] > (255 - factor)):
-                            b = 255
-                        else:
-                            b = pix[i, j][1] + factor
-                        if (pix[i, j][2] > (255 - factor)):
-                            c = 255
-                        else:
-                            c = pix[i, j][2] + factor
+            if type(pix[0, 0]) != int:
+                for i in range(self.width):
+                    for j in range(self.height):
+                        if (i - Ox) ** 2 + (j - Oy) ** 2 <= radius ** 2:
+                            if (pix[i, j][0] > (255 - factor)):
+                                a = 255
+                            else:
+                                a = pix[i, j][0] + factor
+                            if (pix[i, j][1] > (255 - factor)):
+                                b = 255
+                            else:
+                                b = pix[i, j][1] + factor
+                            if (pix[i, j][2] > (255 - factor)):
+                                c = 255
+                            else:
+                                c = pix[i, j][2] + factor
 
-                        draw.point((i, j), (a, b, c))
+                            draw.point((i, j), (a, b, c))
+            else:
+                for i in range(self.width):
+                    for j in range(self.height):
+                        if (i - Ox) ** 2 + (j - Oy) ** 2 <= radius ** 2:
+                            if (pix[i, j] > (255 - factor)):
+                                a = 255
+                            else:
+                                a = pix[i, j] + factor
+
+                            draw.point((i, j), a)
+
         else:
-            for i in range(self.width):
-                for j in range(self.height):
-                    if (i - Ox) ** 2 + (j - Oy) ** 2 <= radius ** 2:
-                        if (pix[i, j][0] > (0 - factor)):
-                            a = 0
-                        else:
-                            a = pix[i, j][0] + factor
-                        if (pix[i, j][1] > (0 - factor)):
-                            b = 0
-                        else:
-                            b = pix[i, j][1] + factor
-                        if (pix[i, j][2] > (0 - factor)):
-                            c = 0
-                        else:
-                            c = pix[i, j][2] + factor
+            if type(pix[0, 0]) != int:
+                for i in range(self.width):
+                    for j in range(self.height):
+                        if (i - Ox) ** 2 + (j - Oy) ** 2 <= radius ** 2:
+                            if (pix[i, j][0] > (0 - factor)):
+                                a = 0
+                            else:
+                                a = pix[i, j][0] + factor
+                            if (pix[i, j][1] > (0 - factor)):
+                                b = 0
+                            else:
+                                b = pix[i, j][1] + factor
+                            if (pix[i, j][2] > (0 - factor)):
+                                c = 0
+                            else:
+                                c = pix[i, j][2] + factor
 
-                        draw.point((i, j), (a, b, c))
+                            draw.point((i, j), (a, b, c))
+            else:
+                for i in range(self.width):
+                    for j in range(self.height):
+                        if (i - Ox) ** 2 + (j - Oy) ** 2 <= radius ** 2:
+                            if (pix[i, j] > (0 - factor)):
+                                a = 0
+                            else:
+                                a = pix[i, j] + factor
+
+                            draw.point((i, j), a)
 
         return img
 
     def transform_blur(self, path):
-        return  cv2.GaussianBlur (cv2.imread(path), (5,5), 0)
+        return  cv2.GaussianBlur(cv2.imread(path), (5,5), 0)
 
     def transform_compress(self, factor, img):
         img = img.resize((round(factor*self.width), self.height))
