@@ -1,6 +1,9 @@
 #
-#  Images and files are read from directory "images".
+#  Crops images from .xml files created LabelImg
 #
+#  Replace {NameDir} with the name of the image folder
+#
+
 import os
 import glob
 from PIL import Image
@@ -8,7 +11,8 @@ import xml.etree.ElementTree as ET
 
 def crop(path):
     i = 0
-    for xml_file in glob.glob(path + '/images/*.xml'):
+    directoryImages = '/' + {NameDir} + '/'
+    for xml_file in glob.glob(path + directoryImages + '*.xml'):
         tree = ET.parse(xml_file)
         root = tree.getroot()
         for member in root.findall('object'):
@@ -21,12 +25,12 @@ def crop(path):
                 int(member[4][3].text)
                 ]
 
-            if not os.path.exists(path + '/' + value[1]):
-                os.makedirs(path + '/' + value[1])
+            if not os.path.exists(path + directoryImages + value[1]):
+                os.makedirs(path + directoryImages + value[1])
 
-            img = Image.open(path + '/images/' + value[0])
+            img = Image.open(path + directoryImages + value[0])
             img = img.crop((value[2], value[3], value[4], value[5]))
-            img.save(path + '/' + value[1] + '/image_' + value[1] + '_' + str(i) + '.png')
+            img.save(path + directoryImages + value[1] + '/image_' + value[1] + '_' + str(i) + '.png')
 
     print('done ' + str(i) + ' labels')
 
