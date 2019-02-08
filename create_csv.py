@@ -2,10 +2,12 @@
 #   Images are read from all directories in the folder in which the script resides.
 #   The directory name is an image label.
 #
+
 import os
 import glob
 import pandas as pd
 from PIL import Image
+from sys import platform
 
 def img_to_csv(dirs_in):
     xml_list = []
@@ -15,10 +17,14 @@ def img_to_csv(dirs_in):
             width = image.size[0]
             height = image.size[1]
 
-            a = dir_in.split('\\')
+            if platform == "linux" or platform == "linux2":
+                a = dir_in.split('/')
+            elif platform == "win32":
+                a = dir_in.split('\\')
+
             label = a[len(a)-1]
 
-            b = image_file.split('\\')
+            b = image_file.split('/')
             filename = b[len(b)-1]
 
             value = (filename,
@@ -34,7 +40,6 @@ def img_to_csv(dirs_in):
     column_name = ['filename', 'width', 'height', 'class', 'xmin', 'ymin', 'xmax', 'ymax']
     xml_df = pd.DataFrame(xml_list, columns=column_name)
     return xml_df
-
 
 def main():
     dirs = [x[0] for x in os.walk(os.path.join(os.getcwd()))]
