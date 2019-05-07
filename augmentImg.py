@@ -22,7 +22,7 @@ class App(QWidget):
         inbox.addWidget(self.browseBut)
         inbox.addWidget(self.path_line)
 
-        # 1
+        # One change
         checkBox = QHBoxLayout()
         checkBoxLeft = QVBoxLayout()
         checkBoxRight = QVBoxLayout()
@@ -30,7 +30,7 @@ class App(QWidget):
         # Left column
         self.black_and_white = QCheckBox('Black and white', self)
         self.noises = QCheckBox('Noises', self)
-        self.turns = QCheckBox('Turn', self)
+        self.turns = QCheckBox('Rotate', self)
         self.gray_shades = QCheckBox('Shades gray', self)
         self.strips = QCheckBox('Strips', self)
 
@@ -65,7 +65,7 @@ class App(QWidget):
         checkBox.addLayout(checkBoxLeft)
         checkBox.addLayout(checkBoxRight)
 
-        #2
+        #Several changes
         checkBox_one = QHBoxLayout()
         checkBoxLeft_one = QVBoxLayout()
         checkBoxRight_one = QVBoxLayout()
@@ -73,7 +73,7 @@ class App(QWidget):
         # Left column
         self.black_and_white_one = QCheckBox('Black and white', self)
         self.noises_one = QCheckBox('Noises', self)
-        self.turns_one = QCheckBox('Turn', self)
+        self.turns_one = QCheckBox('Rotate', self)
         self.gray_shades_one = QCheckBox('Shades gray', self)
         self.strips_one = QCheckBox('Strips', self)
 
@@ -113,8 +113,8 @@ class App(QWidget):
         tab2 = QFrame()
         tab2.setLayout(checkBox_one)
         self.tab = QTabWidget()
-        self.tab.addTab(tab1, "&more")
-        self.tab.addTab(tab2, "&one")
+        self.tab.addTab(tab1, "&One change")
+        self.tab.addTab(tab2, "&Several changes")
         self.tab.currentChanged.connect(self.changeTab)
 
         vbox = QVBoxLayout()
@@ -124,7 +124,6 @@ class App(QWidget):
 
         self.setLayout(vbox)
         self.show()
-        self.move(250, 150)
         self.setWindowTitle('AugmentationImg')
         self.setWindowIcon(QIcon('icon.jpg'))
         self.show()
@@ -201,7 +200,6 @@ class App(QWidget):
 
     def showDialog(self, treat, text):
         value, ok = QInputDialog.getText(self, 'Input Dialog',  str(text) + '\nEnter conversion factor:')
-
         if ok:
             if value != '':
                 x = self.arr_treat.index([treat])
@@ -222,5 +220,5 @@ class App(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = App()
-    ex.resize(630, 171)
+    ex.resize(700, 310)
     sys.exit(app.exec_())
