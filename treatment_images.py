@@ -259,18 +259,18 @@ class TreatmentImages:
                     for j in range(self.height):
                         ti = round(tin)
                         if j > ti and j < ti+self.height // 8:
-                            if (pix[i, j][0] > 215):
+                            if (pix[i, j][0] > (255-factor)):
                                 a = 255
                             else:
-                                a = pix[i, j][0] + 40
-                            if (pix[i, j][1] > 215):
+                                a = pix[i, j][0] + factor
+                            if (pix[i, j][1] > (255-factor)):
                                 b = 255
                             else:
-                                b = pix[i, j][1] + 40
-                            if (pix[i, j][2] > 215):
+                                b = pix[i, j][1] + factor
+                            if (pix[i, j][2] > (255-factor)):
                                 c = 255
                             else:
-                                c = pix[i, j][2] + 40
+                                c = pix[i, j][2] + factor
 
                             draw.point((i, j), (a, b ,c))
 
@@ -283,10 +283,10 @@ class TreatmentImages:
                     for j in range(self.height):
                         ti = round(tin)
                         if j > ti and j < ti+self.height // 8:
-                            if (pix[i, j] > 215):
+                            if (pix[i, j] > (255-factor)):
                                 a = 255
                             else:
-                                a = pix[i, j] + 40
+                                a = pix[i, j] + factor
                             draw.point((i, j), a)
 
                     if tin>tout:
